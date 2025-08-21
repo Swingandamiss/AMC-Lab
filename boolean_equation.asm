@@ -1,0 +1,8 @@
+	ORG 0000H
+	MOV P1,#0FFH
+	MOV P2,#00H
+ 	AGAIN: MOV A,P1
+		   ANL A,#01H
+		   MOV P2,A
+		   SJMP AGAIN
+	END
