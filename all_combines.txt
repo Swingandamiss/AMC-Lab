@@ -1,0 +1,166 @@
+----------------Ascending order ARM-------------------
+        LDR R0, =0x20000000     ; base address of array
+        MOV R1, #5              ; array length (5 elements)
+
+SORT_OUTER
+        MOV R2, R1              ; inner loop counter
+        SUB R2, R2, #1
+        LDR R3, =0x20000000     ; start of array again
+
+SORT_INNER
+        LDR R4, [R3]            ; load arr[i]
+        LDR R5, [R3, #4]        ; load arr[i+1]
+        CMP R4, R5
+        BLE NO_SWAP
+        STR R5, [R3]            ; swap arr[i] and arr[i+1]
+        STR R4, [R3, #4]
+
+NO_SWAP
+        ADD R3, R3, #4          ; move to next element
+        SUB R2, R2, #1
+        CMP R2, #0
+        BGT SORT_INNER
+
+        SUB R1, R1, #1
+        CMP R1, #1
+        BGT SORT_OUTER
+
+STOP    B STOP
+
+---------------------Descending order ARM------------------
+        LDR R0, =0x20000000     ; base address of array
+        MOV R1, #5              ; array length
+
+SORT_OUTER2
+        MOV R2, R1
+        SUB R2, R2, #1
+        LDR R3, =0x20000000
+
+SORT_INNER2
+        LDR R4, [R3]
+        LDR R5, [R3, #4]
+        CMP R4, R5
+        BGE NO_SWAP2
+        STR R5, [R3]            ; swap for descending
+        STR R4, [R3, #4]
+
+NO_SWAP2
+        ADD R3, R3, #4
+        SUB R2, R2, #1
+        CMP R2, #0
+        BGT SORT_INNER2
+
+        SUB R1, R1, #1
+        CMP R1, #1
+        BGT SORT_OUTER2
+
+STOP2   B STOP2
+
+--------------------Factorial ARM--------------------------
+        MOV R0, #5              ; n = 5
+        MOV R1, #1              ; result = 1
+
+FACT_LOOP
+        MUL R1, R1, R0          ; result *= n
+        SUB R0, R0, #1
+        CMP R0, #0
+        BGT FACT_LOOP
+
+        LDR R2, =0x20000040     ; store result
+        STR R1, [R2]
+
+FACT_END B FACT_END
+
+--------------------Fibonnaci ARM--------------------------
+        LDR R0, =0x20000000     ; base address to store series
+        MOV R1, #10             ; number of terms
+
+        MOV R2, #0              ; Fib(0)
+        MOV R3, #1              ; Fib(1)
+
+        STR R2, [R0]            ; store Fib(0)
+        ADD R0, R0, #4
+        STR R3, [R0]            ; store Fib(1)
+        ADD R0, R0, #4
+        SUB R1, R1, #2          ; 2 terms already stored
+
+FIB_LOOP
+        ADD R4, R2, R3          ; next = prev1 + prev2
+        STR R4, [R0]
+        MOV R2, R3
+        MOV R3, R4
+        ADD R0, R0, #4
+        SUB R1, R1, #1
+        CMP R1, #0
+        BGT FIB_LOOP
+
+FIB_END B FIB_END
+
+---------------------MAC ARM-------------------------------
+        LDR R0, =0x20000000         ; R0 = base address of array A
+        LDR R1, =0x20000020         ; R1 = base address of array B
+        MOV R2, #5                  ; R2 = number of elements
+        MOV R3, #0                  ; R3 = accumulator (sum)
+
+MAC_LOOP
+        LDR R4, [R0], #4            ; Load A[i], increment R0
+        LDR R5, [R1], #4            ; Load B[i], increment R1
+        MLA R3, R4, R5, R3          ; R3 = (R4 * R5) + R3
+        SUB R2, R2, #1              ; Decrement counter
+        CMP R2, #0
+        BGT MAC_LOOP                ; Loop until done
+
+        LDR R6, =0x20000040         ; Store result here
+        STR R3, [R6]
+
+STOP    B STOP                      ; Infinite loop (end)
+
+--------------------Ascending order 8051---------------------
+#include <stdint.h>
+
+#define ARRAY_ADDR   ((uint32_t*)0x20000000)   // base of array
+#define N            5                         // number of elements
+
+int main(void) {
+    uint32_t *arr = ARRAY_ADDR;
+    uint32_t i, j, temp;
+
+    // Bubble Sort (Ascending)
+    for (i = 0; i < N - 1; i++) {
+        for (j = 0; j < N - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+
+    while (1);   // stop here
+}
+
+-----------------------Descending order C----------------------
+#include <stdint.h>
+
+#define ARRAY_ADDR   ((uint32_t*)0x20000000)
+#define N            5
+
+int main(void) {
+    uint32_t *arr = ARRAY_ADDR;
+    uint32_t i, j, temp;
+
+    // Bubble Sort (Descending)
+    for (i = 0; i < N - 1; i++) {
+        for (j = 0; j < N - 1 - i; j++) {
+            if (arr[j] < arr[j + 1]) {
+                // Swap
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+
+    while (1);
+}
