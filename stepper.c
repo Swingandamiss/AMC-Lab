@@ -23,7 +23,7 @@ int main(void)
 
     while(1)
     {
-int cnt=50;
+int cnt=250;
 while(cnt>0){
         GPIO_PORTF_DATA_R = 0x04;
         delayMs(10);
@@ -50,7 +50,7 @@ while(cnt>0){
         delayMs(10);
 cnt--;
 }
-cnt=50;
+cnt=100;
 while(cnt>0)
     {
         GPIO_PORTC_DATA_R = 0x10;  // PC4 ON
