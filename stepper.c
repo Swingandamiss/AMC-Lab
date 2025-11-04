@@ -12,12 +12,12 @@ int main(void)
     SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R2;
 
     /* enable the GPIO pins for the PF2/PF3/PB3/PC4 as output */
-    GPIO_PORTF_DIR_R = 0x0E;
+    GPIO_PORTF_DIR_R = 0x0C;
     GPIO_PORTB_DIR_R = 0x08;
     GPIO_PORTC_DIR_R = 0x10;
 
     /* enable the GPIO pins for digital function */
-    GPIO_PORTF_DEN_R = 0x0E;
+    GPIO_PORTF_DEN_R = 0x0C;
     GPIO_PORTB_DEN_R = 0x08;
     GPIO_PORTC_DEN_R = 0x10;
 
